@@ -1,37 +1,60 @@
-## Welcome to GitHub Pages
+# RaspbPiConfig
+Personal config for raspberry pi 3B+
 
-You can use the [editor on GitHub](https://github.com/Agustinso/agustinso.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+# SSH at start
+Create a file named `ssh` in root of the SD
+```
+cd a sdcard
+type NUL >> ssh
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+# Wifi at start
+create `wpa_supplicant.conf` at root of SD:
+```
+country=AR
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
 
-### Jekyll Themes
+network={
+    ssid="NETWORK-NAME"
+    psk="NETWORK-PASSWORD"
+}
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Agustinso/agustinso.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+# First boot
+```
+sudo raspi-config
+```
+change hsotname and expand filesystem
 
-### Support or Contact
+# Create user
+```
+sudo adduser USERHERE
+for GROUP in adm dialout cdrom sudo audio video plugdev games users netdev input spi i2c gpio; do sudo adduser USERHERE $GROUP; done
+```
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+# Autologin to CLI
+
+Edit your /etc/systemd/logind.conf , change #NAutoVTs=6 to NAutoVTs=1
+
+Create a /etc/systemd/system/getty@tty1.service.d/override.conf through ;
+
+systemctl edit getty@tty1
+
+Past the following lines
+```
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin USERHERE --noclear %I 38400 linux
+```
+enable the getty@tty1.service then reboot
+
+systemctl enable getty@tty1.service
+
+reboot
+
+# Install ohmyZSH
+`sudo apt install zsh`
+
+
+`sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"`
