@@ -195,14 +195,14 @@ sudo a2enmod mime
 sudo systemctl restart apache2.service
 ```
 # Serveo Service and adding the trusted domain
-``
+```
 sudo nano /var/www/html/nextcloud/config/config.php
-``
+```
 
-``
+```
 sudo nano /etc/systemd/system/serveo.service
-``
-``
+```
+```
 [Unit]
 Description=Serveo connection to agustinso.serveo.net at port 80
 After=network.target
@@ -214,11 +214,11 @@ ExecStart=/usr/bin/env autossh -M 0 -o ServerAliveInterval=60 -R agustinso:80:lo
 
 [Install]
 WantedBy=multi-user.target
-``
-``
+```
+```
 sudo systemctl start serveo.service
 sudo systemctl enable serveo.service
-``
+```
 ## Upgrading NextCloud
 ```
 sudo mv /var/www/html/nextcloud /var/www/html/nextcloud_bak
