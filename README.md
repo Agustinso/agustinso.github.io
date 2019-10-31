@@ -77,7 +77,7 @@ sudo systemctl start mariadb.service
 sudo systemctl enable mariadb.service
 sudo mysql_secure_installation
 ```
-'
+```
     Enter current password for root (enter for none): Just press the Enter
     Set root password? [Y/n]: Y
     New password: Enter password
@@ -86,12 +86,14 @@ sudo mysql_secure_installation
     Disallow root login remotely? [Y/n]: Y
     Remove test database and access to it? [Y/n]:  Y
     Reload privilege tables now? [Y/n]:  Y
-'
+```
+
 ```
 sudo systemctl stop mariadb.service
 sudo systemctl start mariadb.service
 sudo systemctl enable mariadb.service
-
+```
+```
 sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 sudo apt update
@@ -150,8 +152,8 @@ sudo composer install
 sudo git submodule update --init
 sudo chown -R www-data:www-data /var/www/html/nextcloud/
 sudo chmod -R 755 /var/www/html/nextcloud/
-
-# COnfigure apache2
+```
+# Configure apache2
 ```
 sudo nano /etc/apache2/sites-available/nextcloud.conf
 ```
@@ -192,7 +194,31 @@ sudo a2enmod mime
 
 sudo systemctl restart apache2.service
 ```
+# Serveo Service and adding the trusted domain
+``
+sudo nano /var/www/html/nextcloud/config/config.php
+``
 
+``
+sudo nano /etc/systemd/system/serveo.service
+``
+``
+[Unit]
+Description=Serveo connection to agustinso.serveo.net at port 80
+After=network.target
+StartLimitIntervalSec=0                                                                                                 [Service]                                                                                                               Type=simple
+Restart=always
+RestartSec=1
+User=agustin
+ExecStart=/usr/bin/env autossh -M 0 -o ServerAliveInterval=60 -R agustinso:80:localhost:80 serveo.net
+
+[Install]
+WantedBy=multi-user.target
+``
+``
+sudo systemctl start serveo.service
+sudo systemctl enable serveo.service
+``
 ## Upgrading NextCloud
 ```
 sudo mv /var/www/html/nextcloud /var/www/html/nextcloud_bak
