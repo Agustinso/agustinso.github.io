@@ -63,7 +63,7 @@ reboot
 
 # Install Apache2 HTTP Server
 
-'''
+```
 sudo apt update
 sudo apt install apache2
 sudo systemctl stop apache2.service
@@ -76,7 +76,7 @@ sudo systemctl stop mariadb.service
 sudo systemctl start mariadb.service
 sudo systemctl enable mariadb.service
 sudo mysql_secure_installation
-'''
+```
 '
     Enter current password for root (enter for none): Just press the Enter
     Set root password? [Y/n]: Y
@@ -87,7 +87,7 @@ sudo mysql_secure_installation
     Remove test database and access to it? [Y/n]:  Y
     Reload privilege tables now? [Y/n]:  Y
 '
-'''
+```
 sudo systemctl stop mariadb.service
 sudo systemctl start mariadb.service
 sudo systemctl enable mariadb.service
@@ -96,14 +96,14 @@ sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 sudo apt update
 sudo apt install php7.2 libapache2-mod-php7.2 php7.2-common php7.2-gmp php7.2-curl php7.2-intl php7.2-mbstring php7.2-xmlrpc php7.2-mysql php7.2-gd php7.2-xml php7.2-cli php7.2-zip
-'''
+```
 
 # Config PHP
-'''
+```
 sudo nano /etc/php/7.2/apache2/php.ini
-'''
+```
 with:
-'''
+```
 file_uploads = On
 allow_url_fopen = On
 short_open_tag = On
@@ -111,36 +111,36 @@ memory_limit = 256M
 upload_max_filesize = 100M
 max_execution_time = 360
 date.timezone = America/Argentina/Buenos_Aires
-'''
+```
 
 and restart PHP
 
-'''
+```
 sudo systemctl restart apache2.service
-'''
+```
 create a phpinfo.php
-'''
+```
 sudo nano /var/www/html/phpinfo.php
-'''
+```
 with
-'''
+```
 <?php phpinfo( ); ?>
-'''
+```
 You should see the info page in http://localhost/phpinfo.php
 
 #  Create NextCloud Database
 
-'''
+```
 sudo mysql -u root -p
 CREATE DATABASE nextcloud;
 CREATE USER 'nextclouduser'@'localhost' IDENTIFIED BY 'new_password_here';
 GRANT ALL ON nextcloud.* TO 'nextclouduser'@'localhost' IDENTIFIED BY 'user_password_here' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 EXIT;
-'''
+```
 
 # Download NextCloud Latest Release
-'''
+```
 sudo apt install curl git
 curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 cd /var/www/html
@@ -152,11 +152,11 @@ sudo chown -R www-data:www-data /var/www/html/nextcloud/
 sudo chmod -R 755 /var/www/html/nextcloud/
 
 # COnfigure apache2
-'''
+```
 sudo nano /etc/apache2/sites-available/nextcloud.conf
-'''
+```
 with
-'''
+```
 <VirtualHost *:80>
      ServerAdmin admin@example.com
      DocumentRoot /var/www/html/nextcloud/
@@ -180,9 +180,9 @@ with
      CustomLog ${APACHE_LOG_DIR}/access.log combined
 
 </VirtualHost>
-'''
+```
 # Enable the NextCloud and Rewrite Module
-'''
+```
 sudo a2ensite nextcloud.conf
 sudo a2enmod rewrite
 sudo a2enmod headers
@@ -191,10 +191,10 @@ sudo a2enmod dir
 sudo a2enmod mime
 
 sudo systemctl restart apache2.service
-'''
+```
 
 ## Upgrading NextCloud
-'''
+```
 sudo mv /var/www/html/nextcloud /var/www/html/nextcloud_bak
 cd /var/www/html
 sudo git clone --branch stable14 https://github.com/nextcloud/server.git nextcloud
@@ -207,4 +207,4 @@ sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --on
 sudo composer update /var/www/html/nextcloud --with-dependencies
 sudo -u www-data php /var/www/html/nextcloud/occ upgrade
 sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
-'''
+```
